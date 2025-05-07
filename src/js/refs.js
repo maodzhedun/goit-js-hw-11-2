@@ -1,4 +1,5 @@
 export default {
-    formEl: document.querySelector('.search-form'),
-    btnSubmit: document.querySelector('.')
-}
+  formEl: document.querySelector('.search-form'),
+  galleryEl: document.querySelector('.gallery'),
+  btnLoadMore: document.querySelector('.load-more'),
+};

@@ -5,21 +5,18 @@ const BASE_URL = 'https://pixabay.com/api/';
 // https://pixabay.com/api/?key=38815747-812e0b1a0705a38baabb283c8&q=yellow+flowers&image_type=photo
 
 // axios.defaults.auth = API_KEY
-axios.defaults.baseURL = BASE_URL
-
-axios.defaults.params
+axios.defaults.baseURL = BASE_URL;
 
 function getData(query) {
-  const params = new URLSearchParams({
+  const params = {
     key: API_KEY,
     q: query,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-  });
+  };
 
-  return axios.get('', {params});
+  return axios.get('', { params });
 }
 
-
-export {getData}
+export { getData };
