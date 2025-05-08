@@ -11,7 +11,9 @@ function markupImages(array) {
         downloads,
       }) => {
         return `<div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          <a class="gallery__link" href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          </a>
         <div class="info">
             <p class="info-item">
             <b>Likes: ${likes}</b>
@@ -31,33 +33,5 @@ function markupImages(array) {
     )
     .join('');
 }
-// console.log(array)
 
 export { markupImages };
-
-// <!-- Картка зображення -->
-// <!-- <div class="photo-card">
-//   <img src="" alt="" loading="lazy" />
-//   <div class="info">
-//     <p class="info-item">
-//       <b>Likes</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Views</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Comments</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Downloads</b>
-//     </p>
-//   </div>
-// </div> -->
-
-// webformatURL - посилання на маленьке зображення для списку карток.
-// largeImageURL - посилання на велике зображення.
-// tags - рядок з описом зображення. Підійде для атрибуту alt.
-// likes - кількість лайків.
-// views - кількість переглядів.
-// comments - кількість коментарів.
-// downloads - кількість завантажень.
