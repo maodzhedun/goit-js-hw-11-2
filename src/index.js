@@ -23,7 +23,7 @@ let lightbox = new SimpleLightbox('.gallery a', {
   download: 'downloads',
 });
 
-function onLoadGallery(event) {
+async function onLoadGallery(event) {
   event.preventDefault();
   query = event.target.elements.searchQuery.value.trim();
 
@@ -34,65 +34,65 @@ function onLoadGallery(event) {
     return;
   }
   resetPages();
-  fetchAndShowImage(currentPage, query);
+  await fetchAndShowImage(currentPage, query);
 }
 
-function loadMoreImages() {
+async function loadMoreImages() {
   currentPage += 1;
 
-  fetchAndShowImage(currentPage, query);
+  await fetchAndShowImage(currentPage, query);
 }
 
-function fetchAndShowImage() {
-  getData(currentPage, query)
-    .then(respons => {
-      const searchHits = respons.data.totalHits;
+async function fetchAndShowImage() {
+  try {
+    const respons  = await getData(currentPage, query);
+    const searchHits = respons.data.totalHits;
 
-      Notify.info(`Hooray! We found totalHits images: ${searchHits}.`);
+    Notify.info(`Hooray! We found totalHits images: ${searchHits}.`);
 
-      if (!Array.isArray(respons.data.hits) || respons.data.hits.length === 0) {
-        Report.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-          ''
-        );
-        refs.btnLoadMore.hidden = true;
-
-        return;
-      }
-
-      refs.galleryEl.insertAdjacentHTML(
-        'beforeend',
-        markupImages(respons.data.hits)
+    if (!Array.isArray(respons.data.hits) || respons.data.hits.length === 0) {
+      Report.failure(
+        'Sorry, there are no images matching your search query. Please try again.',
+        ''
       );
+      refs.btnLoadMore.hidden = true;
 
-      lightbox.refresh();
+      return;
+    }
 
-      totalHits += respons.data.hits.length;
-      console.log('View hits', totalHits);
+    refs.galleryEl.insertAdjacentHTML(
+      'beforeend',
+      markupImages(respons.data.hits)
+    );
 
-      if (totalHits > 40) {
-        const { height: cardHeight } =
-          refs.formEl.firstElementChild.getBoundingClientRect();
+    lightbox.refresh();
 
-        window.scrollBy({
-          top: cardHeight * 2,
-          behavior: 'smooth',
-        });
-      }
+    totalHits += respons.data.hits.length;
+    console.log('View hits', totalHits);
 
-      if (totalHits === respons.data.totalHits || totalHits < 40) {
-        refs.btnLoadMore.hidden = true;
-        Notify.info(
-          "We're sorry, but you've reached the end of search results.",
-          ''
-        );
-      } else {
-        refs.btnLoadMore.hidden = false;
-      }
-    })
-    .catch(err => {
-      console.log('Ошибка при получении данных:', err);
-    });
+    //smooth scroll
+    if (totalHits > 40) {
+      const { height: cardHeight } =
+        refs.formEl.firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    }
+
+    if (totalHits === respons.data.totalHits || totalHits < 40) {
+      refs.btnLoadMore.hidden = true;
+      Notify.info(
+        "We're sorry, but you've reached the end of search results.",
+        ''
+      );
+    } else {
+      refs.btnLoadMore.hidden = false;
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 function loadSuccess() {
