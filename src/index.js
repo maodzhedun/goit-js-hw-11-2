@@ -11,7 +11,6 @@ refs.btnLoadMore.addEventListener('click', loadMoreImages);
 
 const target = refs.targetEl;
 
-// console.log(target)
 
 let options = {
   root: null,
@@ -24,6 +23,7 @@ let observer = new IntersectionObserver(loadMoreImages, options);
 let currentPage = 1;
 let query = '';
 let totalHits = 0;
+let searchHits = 0;
 
 let lightbox = new SimpleLightbox('.gallery a', {
   nav: true,
@@ -49,33 +49,23 @@ async function onLoadGallery(event) {
   await fetchAndShowImage(currentPage, query);
 }
 
-// function onload(entries, observer) {
-//   entries.forEach(entry => {
-//     if (entry.isIntersecting) {
-//       loadMoreImages();
-//     }
-//   });
-//   if(){}  observer.unobserve(target)
-// }
-
 function loadMoreImages(entries, observer) {
-  entries.forEach((entry) => {
-    if(entry.isIntersecting){
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
       currentPage += 1;
 
       fetchAndShowImage(currentPage, query);
     }
-    if(totalHits === respons.data.totalHits){
-    }  observer.unobserve(target)
-      
+    if (totalHits === searchHits) {
+      observer.unobserve(target);
+    }
   });
-  
 }
 
 async function fetchAndShowImage() {
   try {
     const respons = await getData(currentPage, query);
-    const searchHits = respons.data.totalHits;
+    searchHits = respons.data.totalHits;
 
     Notify.info(`Hooray! We found totalHits images: ${searchHits}.`);
 
