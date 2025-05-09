@@ -9,6 +9,18 @@ import { markupImages } from './js/markup/markup';
 refs.formEl.addEventListener('submit', onLoadGallery);
 refs.btnLoadMore.addEventListener('click', loadMoreImages);
 
+const target = refs.targetEl;
+
+// console.log(target)
+
+let options = {
+  root: null,
+  rootMargin: '300px',
+  threshold: 1.0,
+};
+
+let observer = new IntersectionObserver(loadMoreImages, options);
+
 let currentPage = 1;
 let query = '';
 let totalHits = 0;
@@ -37,15 +49,32 @@ async function onLoadGallery(event) {
   await fetchAndShowImage(currentPage, query);
 }
 
-async function loadMoreImages() {
-  currentPage += 1;
+// function onload(entries, observer) {
+//   entries.forEach(entry => {
+//     if (entry.isIntersecting) {
+//       loadMoreImages();
+//     }
+//   });
+//   if(){}  observer.unobserve(target)
+// }
 
-  await fetchAndShowImage(currentPage, query);
+function loadMoreImages(entries, observer) {
+  entries.forEach((entry) => {
+    if(entry.isIntersecting){
+      currentPage += 1;
+
+      fetchAndShowImage(currentPage, query);
+    }
+    if(totalHits === respons.data.totalHits){
+    }  observer.unobserve(target)
+      
+  });
+  
 }
 
 async function fetchAndShowImage() {
   try {
-    const respons  = await getData(currentPage, query);
+    const respons = await getData(currentPage, query);
     const searchHits = respons.data.totalHits;
 
     Notify.info(`Hooray! We found totalHits images: ${searchHits}.`);
@@ -55,7 +84,7 @@ async function fetchAndShowImage() {
         'Sorry, there are no images matching your search query. Please try again.',
         ''
       );
-      refs.btnLoadMore.hidden = true;
+      // refs.btnLoadMore.hidden = true;
 
       return;
     }
@@ -64,6 +93,8 @@ async function fetchAndShowImage() {
       'beforeend',
       markupImages(respons.data.hits)
     );
+
+    observer.observe(target);
 
     lightbox.refresh();
 
@@ -82,13 +113,13 @@ async function fetchAndShowImage() {
     }
 
     if (totalHits === respons.data.totalHits || totalHits < 40) {
-      refs.btnLoadMore.hidden = true;
+      // refs.btnLoadMore.hidden = true;
       Notify.info(
         "We're sorry, but you've reached the end of search results.",
         ''
       );
     } else {
-      refs.btnLoadMore.hidden = false;
+      // refs.btnLoadMore.hidden = false;
     }
   } catch (error) {
     console.log(error.message);
