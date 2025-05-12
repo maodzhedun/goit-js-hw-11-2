@@ -11,7 +11,6 @@ refs.btnLoadMore.addEventListener('click', loadMoreImages);
 
 const target = refs.targetEl;
 
-
 let options = {
   root: null,
   rootMargin: '300px',
@@ -35,18 +34,18 @@ let lightbox = new SimpleLightbox('.gallery a', {
   download: 'downloads',
 });
 
-async function onLoadGallery(event) {
+function onLoadGallery(event) {
   event.preventDefault();
   query = event.target.elements.searchQuery.value.trim();
 
-  currentPage = 1;
+  // currentPage = 1;
 
   if (query === '') {
     loadError();
     return;
   }
   resetPages();
-  await fetchAndShowImage(currentPage, query);
+  fetchAndShowImage(currentPage, query);
 }
 
 function loadMoreImages(entries, observer) {
@@ -108,9 +107,10 @@ async function fetchAndShowImage() {
         "We're sorry, but you've reached the end of search results.",
         ''
       );
-    } else {
-      // refs.btnLoadMore.hidden = false;
-    }
+    } 
+    // else {
+    //   // refs.btnLoadMore.hidden = false;
+    // }
   } catch (error) {
     console.log(error.message);
   }
